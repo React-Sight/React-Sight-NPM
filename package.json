@@ -1,0 +1,19 @@
+{
+  "name": "visualize",
+  "version": "1.0.0",
+  "description": "Visualization tool for React Router and Redux",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VisualizeIO/Visualize.git"
+  },
+  "author": "Grant Kang, David Sally, William He",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VisualizeIO/Visualize/issues"
+  },
+  "homepage": "https://github.com/VisualizeIO/Visualize#readme"
+}
