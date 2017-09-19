@@ -18,6 +18,7 @@
   "homepage": "https://github.com/VisualizeIO/Visualize#readme",
   "dependencies": {
     "react": "^15.6.1",
+    "react-d3-tree": "^1.4.0",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
