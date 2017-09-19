@@ -17,6 +17,16 @@ class God extends Component {
       newComponent.name = component._currentElement.type.name || component._currentElement.type
       newComponent.children = [];
 
+      // print the state of stateful components
+      if (component) {
+        if (component._instance) {
+          if (component._instance.state) {
+            console.log('STATE !!!!!', component._instance.state)
+          }    
+        }
+      }
+
+
       const componentChildren = component._renderedChildren
       parentArr.push(newComponent);
       if (componentChildren) {
