@@ -66,7 +66,7 @@ class Tree extends React.Component {
 
 
         var margin = { top: 10, right: 50, bottom: 10, left: 50 },
-            width = 900 - margin.right - margin.left,
+            width = 1000 - margin.right - margin.left,
             height = 960 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
@@ -77,7 +77,7 @@ class Tree extends React.Component {
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate("
-            + margin.left + "," + margin.top + ")");
+            + margin.left + "," + margin.top + ")")
 
         var i = 0,
             duration = 750,
@@ -129,15 +129,42 @@ class Tree extends React.Component {
                 .attr("transform", function (d) {
                     return "translate(" + source.x0 + "," + source.y0 + ")";
                 })
-                .on('click', click);
+                .on('click', click)
+
+            var div = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
             // Add Circle for the nodes
             nodeEnter.append('circle')
                 .attr('class', 'node')
-                .attr('r', 1e-6)
+                .attr('r', 5)
                 .style("fill", function (d) {
                     return d._children ? "lightsteelblue" : "#fff";
+                })
+                .style("pointer-events", "visible")
+
+                .on("mouseover", function (d) {
+                    console.log('data', d)
+                    console.log('mouseover')
+
+                    div.transition()
+                        .duration(1000)
+                        .style("opacity", .9);
+                    div.html(function () { 
+                        console.log(d)
+                        return "Children:" + d._children
+                    })
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
+                })
+                .on("mouseout", function (d) {
+                    console.log('mouseout')
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
+
 
             // Add labels for the nodes
             nodeEnter.append('text')
@@ -146,7 +173,7 @@ class Tree extends React.Component {
                     return d.children || d._children ? -18 : 18;
                 })
                 .attr("text-anchor", "middle")
-                .text(function (d) { return d.data.name; });
+                .text(function (d) { return d.data.name; })
 
             // UPDATE
             var nodeUpdate = nodeEnter.merge(node);
@@ -222,33 +249,12 @@ class Tree extends React.Component {
 
             // Creates a curved (diagonal) path from parent to the child nodes
             function diagonal(s, d) {
-                console.log(s, d)
 
-                // let path = `M ${(s.x + d.x) / 2} ${s.y},
-                // ${(s.x + d.x) / 2} ${d.y},
-                // ${d.x} ${d.y},
-                // C ${s.x} ${s.y}`
-
-                //   let path = `M ${s.x} ${s.y}
-                //   C ${(s.x + d.x) / 2} ${s.y},
-                //     ${(s.x + d.x) / 2} ${d.y},
-                //     ${d.x} ${d.y}`
-
-                    let path = "M" + s.x + "," + s.y
+                let path = "M" + s.x + "," + s.y
                     + "C" + s.x + "," + (s.y + d.y) / 2
-                    + " " + d.x + "," +  (s.y + d.y) / 2
+                    + " " + d.x + "," + (s.y + d.y) / 2
                     + " " + d.x + "," + d.y
 
-
-
-
-
-
-
-                    // let path = `M ${s.x} ${s.y}
-                    // C ${(s.x + d.x - 50) / 2} ${s.y+100},
-                    //   ${(s.x + d.x + 25) / 2} ${d.y+100},
-                    //   ${d.x} ${d.y}`
 
                 return path
             }
