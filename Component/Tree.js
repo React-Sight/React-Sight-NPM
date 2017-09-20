@@ -3,7 +3,6 @@ const ReactDOM = require('react-dom');
 // const MyTooltipComponent = require('my-tooltip-component');
 const d3 = require('d3')
 
-
 class Tree extends React.Component {
     componentDidMount() {
         this.drawChart();
@@ -256,6 +255,7 @@ class Tree extends React.Component {
                     + " " + d.x + "," + (s.y + d.y) / 2
                     + " " + d.x + "," + d.y
 
+
                 return path
             }
 
@@ -271,8 +271,8 @@ class Tree extends React.Component {
                 update(d);
             }
         }
-        /* 
-          D3 code to create our visualization by appending onto this.svg 
+        /*
+          D3 code to create our visualization by appending onto this.svg
         */
 
         // At some point we render a child, say a tooltip
