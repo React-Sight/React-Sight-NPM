@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 // const MyTooltipComponent = require('my-tooltip-component');
 const d3 = require('d3')
 
+
 class Tree extends React.Component {
     componentDidMount() {
         this.drawChart();
@@ -25,7 +26,7 @@ class Tree extends React.Component {
                         "name": "Level 2: A",
                         "children": [
                             { "name": "Son of A" },
-                            { "name": "Daughter of A" }
+                            { "name": "Daughter of A", "props": "asdf" }
                         ]
                     },
                     {
@@ -65,7 +66,7 @@ class Tree extends React.Component {
             };
 
 
-        var margin = { top: 10, right: 50, bottom: 10, left: 50 },
+        var margin = { top: 50, right: 50, bottom: 50, left: 50 },
             width = 1000 - margin.right - margin.left,
             height = 960 - margin.top - margin.bottom;
 
@@ -151,10 +152,10 @@ class Tree extends React.Component {
                     div.transition()
                         .duration(1000)
                         .style("opacity", .9);
-                    div.html(function () { 
-                        console.log(d)
-                        return "Children:" + d._children
-                    })
+                    div.html(
+                        "Name of Component: " + d.data.name + "<br />" +
+                        "Level:" + d.depth    
+                    )
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
                 })
@@ -164,6 +165,7 @@ class Tree extends React.Component {
                         .duration(500)
                         .style("opacity", 0);
                 });
+
 
 
             // Add labels for the nodes
@@ -255,7 +257,6 @@ class Tree extends React.Component {
                     + " " + d.x + "," + (s.y + d.y) / 2
                     + " " + d.x + "," + d.y
 
-
                 return path
             }
 
@@ -271,8 +272,8 @@ class Tree extends React.Component {
                 update(d);
             }
         }
-        /*
-          D3 code to create our visualization by appending onto this.svg
+        /* 
+          D3 code to create our visualization by appending onto this.svg 
         */
 
         // At some point we render a child, say a tooltip
