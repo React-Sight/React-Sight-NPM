@@ -116,7 +116,7 @@ class Tree extends React.Component {
         links = treeData.descendants().slice(1);
 
       // Normalize for fixed-depth.
-      nodes.forEach(function (d) { d.y = d.depth * 100 });
+      nodes.forEach(function (d) { d.y = d.depth * 180 });
 
       // ****************** Nodes section ***************************
 
@@ -230,10 +230,20 @@ class Tree extends React.Component {
         // ${d.x} ${d.y},
         // C ${s.x} ${s.y}`
 
-        let path = `M ${s.x} ${s.y}
-                  C ${(s.x + d.x) / 2} ${s.y},
-                    ${(s.x + d.x) / 2} ${d.y},
-                    ${d.x} ${d.y}`
+        //   let path = `M ${s.x} ${s.y}
+        //   C ${(s.x + d.x) / 2} ${s.y},
+        //     ${(s.x + d.x) / 2} ${d.y},
+        //     ${d.x} ${d.y}`
+
+        let path = "M" + s.x + "," + s.y
+          + "C" + s.x + "," + (s.y + d.y) / 2
+          + " " + d.x + "," + (s.y + d.y) / 2
+          + " " + d.x + "," + d.y
+
+
+
+
+
 
 
         // let path = `M ${s.x} ${s.y}
