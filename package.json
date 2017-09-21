@@ -4,6 +4,7 @@
   "description": "Visualization tool for React Router and Redux",
   "main": "index.js",
   "scripts": {
+    "build": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/VisualizeIO/Visualize#readme",
   "dependencies": {
+    "babel-loader": "^7.1.2",
     "react": "^15.6.1",
     "react-d3-tree": "^1.4.0",
     "react-dom": "^15.6.1",
