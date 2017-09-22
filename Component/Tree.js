@@ -154,7 +154,7 @@ class Tree extends React.Component {
                         .style("opacity", .9);
                     div.html(
                         "Name of Component: " + d.data.name + "<br />" +
-                        "Level:" + d.depth    
+                        "Level:" + d.depth
                     )
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
@@ -272,8 +272,8 @@ class Tree extends React.Component {
                 update(d);
             }
         }
-        /* 
-          D3 code to create our visualization by appending onto this.svg 
+        /*
+          D3 code to create our visualization by appending onto this.svg
         */
 
         // At some point we render a child, say a tooltip
