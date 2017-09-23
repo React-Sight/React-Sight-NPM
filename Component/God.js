@@ -42,7 +42,7 @@ class God extends Component {
     }
     if (component.constructor.name === 'ReactCompositeComponentWrapper' && component._currentElement.type.name === 'Connect') {
       console.log('THIS IS THE STORE---------------: ', component._instance.store.getState())
-
+      
     }
     if (component.constructor.name === 'ReactDOMComponent') {
       //current component is a DOM node;
