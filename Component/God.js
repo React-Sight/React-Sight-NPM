@@ -33,6 +33,13 @@ class God extends Component {
     // console.log('CURRENT COMPONENT: ', component)
     let newComponent = {}
     newComponent.children = []
+    newComponent.id = component._debugID
+    if (component.constructor.name === 'ReactDOMTextComponent') {
+      //current component is a TEXT NODE .. ie. <p>I AM ReactDOMTextComponent</p>
+      //do nothing? LINE BELOW IS STILL IN TESTING TO PASS THRU DOM TEXT
+      // component = component._renderedComponent
+      newComponent.name = component._currentElement
+    }
     if (component.constructor.name === 'ReactCompositeComponentWrapper' && component._currentElement.type.name === 'Connect') {
       console.log('THIS IS THE STORE---------------: ', component._instance.store.getState())
 
@@ -44,11 +51,7 @@ class God extends Component {
       let domProps = component._currentElement.props || null
       newComponent.props = this.parseProps(domProps)
     }
-    if (component.constructor.name === 'ReactDOMTextComponent') {
-      //current component is a TEXT NODE .. ie. <p>I AM ReactDOMTextComponent</p>
-      //do nothing? LINE BELOW IS STILL IN TESTING TO PASS THRU DOM TEXT
-      component = component._renderedComponent
-    }
+
     if (component.constructor.name === 'ReactCompositeComponentWrapper') {
       newComponent.name = component._currentElement && component._currentElement.type && component._currentElement.type.name
       newComponent.state = component && component._instance && component._instance.state || null
