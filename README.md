@@ -17,7 +17,7 @@ import React, { Component } from 'react';
 import Viz from 'visualizeio'
 
 
-//Wrap God Component around your application
+//Wrap Viz Component around your application
 ReactDOM.render(
   <Provider store={store}>
     <Viz>
