@@ -14,20 +14,20 @@ npm install --save-dev visualizeio
 ```javascript
 import React, { Component } from 'react';
 // Add import statement
-import God from 'visualizeio'
+import Viz from 'visualizeio'
 
 
 //Wrap God Component around your application
 ReactDOM.render(
   <Provider store={store}>
-    <God>
+    <Viz>
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={App} />
           <Route exact path="/chat" component={Chat} />
         </Switch>
       </BrowserRouter>
-    </God>
+    </Viz>
   </Provider>
   ,
   document.getElementById('groot'),
