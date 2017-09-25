@@ -104,7 +104,7 @@ class God extends Component {
       });
 
     console.log(this)
-    // this.traverseGOD()
+    this.traverseGOD()
   }
 
   render() {
