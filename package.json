@@ -1,45 +1,36 @@
 {
-  "name": "visualize",
-  "version": "1.0.0",
-  "description": "Visualization tool for React Router and Redux",
-  "main": "index.js",
-  "scripts": {
-    "build": "webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "visualizeio",
+  "version": "1.0.4",
+  "description": "Visualization tool for React applications inspired by react-devtools (supports react-redux and react-router)",
+  "main": "build/index.js",
+  "peerDependencies": {
+    "react": "^15.5.4"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/VisualizeIO/Visualize.git"
-  },
-  "author": "Grant Kang, David Sally, William He",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/VisualizeIO/Visualize/issues"
-  },
-  "homepage": "https://github.com/VisualizeIO/Visualize#readme",
   "dependencies": {
-    "babel-loader": "^7.1.2",
-    "react": "^15.6.1",
-    "react-d3-tree": "^1.4.0",
-    "react-dom": "^15.6.1",
-    "react-redux": "^5.0.6",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
-    "redux": "^3.7.2",
-    "ride": "^0.1.0"
+    "react": "^15.5.4",
+    "ride": "^0.1.0",
+    "webpack": "^2.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
+  "author": {
+    "name": "Grant Kang, David Sally, William He",
+    "email": "example123@email.com"
   },
   "devDependencies": {
-    "axios": "^0.16.2",
-    "babel": "^6.23.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-latest": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "body-parser": "^1.18.1",
-    "css-loader": "^0.28.7",
-    "express": "^4.15.4",
-    "nodemon": "^1.12.0",
-    "webpack": "^3.5.6"
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
   }
 }

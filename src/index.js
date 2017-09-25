@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import ride from 'ride';
 
 class God extends Component {
+  store = []
+
   parseProps = (currentComponent) => {
     let newProps = {}
     for (let key in currentComponent) {
-      // console.log(currentComponent[key])
       if (typeof currentComponent[key] === 'function') {
         newProps[key] = '' + currentComponent[key]
       }
@@ -13,7 +14,7 @@ class God extends Component {
         newProps[key] = new currentComponent[key].constructor
         if (Array.isArray(currentComponent[key])) {
           currentComponent[key].forEach(child => {
-            newProps[key].push(child.type && child.type.name)
+            newProps[key].push(child && child.type && child.type.name)
           })
         } else {
           newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
@@ -30,7 +31,6 @@ class God extends Component {
 
   recursiveTraverse = (component, parentArr) => {
     if (!component._currentElement) return
-    // console.log('CURRENT COMPONENT: ', component)
     let newComponent = {}
     newComponent.children = []
     newComponent.id = component._debugID
@@ -42,7 +42,8 @@ class God extends Component {
     }
     if (component.constructor.name === 'ReactCompositeComponentWrapper' && component._currentElement.type.name === 'Connect') {
       console.log('THIS IS THE STORE---------------: ', component._instance.store.getState())
-      
+      this.store = component._instance.store.getState()
+      component = component._renderedComponent
     }
     if (component.constructor.name === 'ReactDOMComponent') {
       //current component is a DOM node;
@@ -84,8 +85,7 @@ class God extends Component {
     let dom = this._reactInternalInstance._renderedComponent._renderedChildren['.0']
     this.recursiveTraverse(dom, components)
     console.log('INSIDE TRAVERSE GOD: ', components)
-    let data = { data: components }
-    console.log('testing stringed expression: ', "" + function() {console.log('123') })
+    let data = { data: components, store: this.store }
     console.log('This is DE+/serialized data: ', JSON.parse(JSON.stringify(data)))
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
 
@@ -104,7 +104,7 @@ class God extends Component {
       });
 
     console.log(this)
-    this.traverseGOD()
+    // this.traverseGOD()
   }
 
   render() {
@@ -117,33 +117,3 @@ class God extends Component {
 }
 
 export default God;
-
-// traverseGOD = () => {
-//   let components = [];
-//   let dom = this._reactInternalInstance._renderedComponent
-//   recursiveTraverse(dom, components)
-//   top.postMessage({ data: components }, '*')
-//   return components
-//
-//   function recursiveTraverse(component, parentArr) {
-//     let newComponent = {}
-//
-//     if (!component._currentElement) return
-//     if (component._closingComment) return // catch bootstrap things
-//
-//     newComponent.name = component._currentElement && component._currentElement.type.name || component._currentElement.type || 'nothing'
-//     newComponent.state = component && component._instance && component._instance.state || null
-//     newComponent.children = [];
-//
-//     const componentChildren = component._renderedChildren
-//     parentArr.push(newComponent);
-//     if (componentChildren) {
-//       for (let key in componentChildren) {
-//         recursiveTraverse(componentChildren[key], newComponent.children)
-//       }
-//     }
-//     else if (component._renderedComponent) {
-//       recursiveTraverse(component._renderedComponent, newComponent.children)
-//     }
-//   };
-// }
