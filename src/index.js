@@ -1,56 +1,61 @@
 import React, { Component } from 'react';
 import ride from 'ride';
 
+/** Wrapper component to send messages to React Sight© extension */
 class God extends Component {
   store = []
 
+  /** TODO - flattening...
+   * 
+   * iterate through props list
+   */
   parseProps = (currentComponent) => {
     let newProps = {}
-    for (let key in currentComponent) {
-      if (typeof currentComponent[key] === 'function') {
-        newProps[key] = '' + currentComponent[key]
-      }
+    const keys = Object.keys(currentComponent)
+    keys.forEach(key => {
+      // Functions
+      if (typeof currentComponent[key] === 'function') newProps[key] = '' + currentComponent[key]
+      // Objects
+      else if (typeof currentComponent[key] === 'object') newProps[key] = currentComponent[key]
+      // Children - TODO flatten this object
       else if (key === 'children') {
         newProps[key] = new currentComponent[key].constructor
         if (Array.isArray(currentComponent[key])) {
           currentComponent[key].forEach(child => {
             newProps[key].push(child && child.type && child.type.name)
           })
-        } else {
-          newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
         }
-      } else if (typeof currentComponent[key] === 'object') {
-        newProps[key] = currentComponent[key]
-      } else {
-        newProps[key] = currentComponent[key]
+        else newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
       }
-    }
-    return newProps
+      else newProps[key] = currentComponent[key]
+      return newProps
+    })
   }
 
-
+  /** Traverse through virtual DOM and add data to array */
   recursiveTraverse = (component, parentArr) => {
+    // if no current element, return
     if (!component._currentElement) return
-    let newComponent = {}
-    newComponent.children = []
-    newComponent.id = component._debugID
+
+    const newComponent = { children: [], id: component._debugID }
+
     if (component.constructor.name === 'ReactDOMTextComponent') {
       //current component is a TEXT NODE .. ie. <p>I AM ReactDOMTextComponent</p>
       //do nothing? LINE BELOW IS STILL IN TESTING TO PASS THRU DOM TEXT
       // component = component._renderedComponent
       newComponent.name = component._currentElement
     }
-    if (component.constructor.name === 'ReactDOMComponent') {
+    else if (component.constructor.name === 'ReactDOMComponent') {
       //current component is a DOM node;
-      newComponent.name = component._currentElement && component._currentElement.type
+      newComponent.name = component._currentElement.type
       //BELOW IS STILL IN TESTING: trying to grab props and its className from a DOM NODE
-      let domProps = component._currentElement.props || null
+      const domProps = component._currentElement.props || null
       newComponent.props = this.parseProps(domProps)
       newComponent.type = component.constructor.name
     }
 
-    if (component.constructor.name === 'ReactCompositeComponentWrapper') {
-      newComponent.name = component._currentElement && component._currentElement.type && component._currentElement.type.name
+    else if (component.constructor.name === 'ReactCompositeComponentWrapper') {
+      newComponent.name = component._currentElement.type && component._currentElement.type.name
       newComponent.state = component && component._instance && component._instance.state || null
       newComponent.type = component.constructor.name
       if (component._currentElement.type.name === 'Connect' || component._currentElement.type.name === 'Provider') {
@@ -68,6 +73,7 @@ class God extends Component {
         }
       }
     }
+
     //go into children of current component
     const componentChildren = component._renderedChildren
     parentArr.push(newComponent);
@@ -81,33 +87,33 @@ class God extends Component {
     }
   };
 
-  traverseGOD = () => {
-    let components = [];
-    let dom = this._reactInternalInstance._renderedComponent._renderedChildren['.0']
+  /** Traverse through virtual DOM and post message to React Sight extension  */
+  traverseGOD = (components = []) => {
+    const dom = this._reactInternalInstance._renderedComponent._renderedChildren['.0']
     this.recursiveTraverse(dom, components)
-    console.log('INSIDE TRAVERSE GOD: ', components)
-    let data = { data: components, store: this.store }
-    // console.log('This is DE+/serialized data: ', JSON.parse(JSON.stringify(data)))
+    const data = { data: components, store: this.store }
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
-
-    return components
   }
 
+  /** 
+   * When component Mounts, add a listener for React-Sight extension. When extension loads,
+   * a message will be emitted and this component will respond with data so that extension 
+   * can draw when it first loads
+   */
   componentDidMount() {
     window.addEventListener('attached', e => {
       console.log('detected event')
       this.traverseGOD()
     })
 
+    // Dynamically Patch setState at runtime to call traverseGod
     ride(React.Component.prototype, 'setState')
-      .after(() => {
-        this.traverseGOD();
-      });
+      .after(() => { this.traverseGOD() });
 
-    console.log(this)
-    this.traverseGOD()
+    console.log('This: ', this)
   }
 
+  // Render the children of the props
   render() {
     return (
       <div>
