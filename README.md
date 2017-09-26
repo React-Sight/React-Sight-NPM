@@ -1,6 +1,8 @@
 # Visualize
 Visualize is a live view of the component hierarchy tree of your React application with support for React Router and Redux.
 
+<img src="/assets/reactsight.png" width="300"/>
+
 ## Set Up
 
 1. Run npm install for Visualize in your root project folder
