@@ -65,22 +65,24 @@ class God extends Component {
       let copyProps = component && component._instance && component._instance.props || null
       newComponent.props = this.parseProps(copyProps)
       newComponent.methods = []
-      for (let properties in component._instance) {
+      const keys = Object.keys(component._instance)
+      keys.forEach(properties => {
         if (typeof component._instance[properties] === 'function' && properties !== 'render') {
           let newObj = {}
           newObj[properties] = "" + component._instance[properties]
           newComponent.methods.push(newObj)
         }
-      }
+      })
     }
 
     //go into children of current component
     const componentChildren = component._renderedChildren
     parentArr.push(newComponent);
     if (componentChildren) {
-      for (let key in componentChildren) {
+      const keys = Object.keys(componentChildren)
+      keys.forEach(key => {
         this.recursiveTraverse(componentChildren[key], newComponent.children)
-      }
+      })
     }
     else if (component._renderedComponent) {
       this.recursiveTraverse(component._renderedComponent, newComponent.children)
