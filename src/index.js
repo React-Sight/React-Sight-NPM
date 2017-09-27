@@ -4,6 +4,7 @@ import ride from 'ride';
 /** Wrapper component to send messages to React Sight© extension */
 class God extends Component {
   store = []
+  version = null;
 
   /** TODO - flattening...
    * 
@@ -97,21 +98,55 @@ class God extends Component {
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
   }
 
+  /** TODO: Get State & Props
+   * 
+   * 
+   * Traverse through vDOM (React 16) and build up JSON data
+   * 
+   */
+  recur16 = (node, parentArr) => {
+    const newComponent = {}
+
+    if (node.type) {
+      if (node.type.name) newComponent.name = node.type.name
+      else newComponent.name = node.type
+    }
+
+    newComponent.children = []
+    console.log('node:', node)
+    console.log('name:', newComponent.name)
+    parentArr.push(newComponent)
+    if (node.child != null) this.recur16(node.child, newComponent.children)
+    if (node.sibling != null) this.recur16(node.sibling, parentArr)
+  }
+
+  /** Traversal Method for React 16 */
+  traverse16 = (components = []) => {
+    const vDOM = this._reactInternalFiber
+    this.recur16(vDOM, components)
+    const data = { data: components, store: this.store }
+    window.postMessage(JSON.parse(JSON.stringify(data)), '*')
+  }
+
   /** 
    * When component Mounts, add a listener for React-Sight extension. When extension loads,
    * a message will be emitted and this component will respond with data so that extension 
    * can draw when it first loads
    */
   componentDidMount() {
+    this.version = React.version
+    console.log('version', this.version)
+
+    // experimental react 16 support
+    if (this.version === '16.0.0') this.traverseGOD = this.traverse16
+
     window.addEventListener('attached', e => {
       console.log('detected event')
       this.traverseGOD()
     })
-
     // Dynamically Patch setState at runtime to call traverseGod
     ride(React.Component.prototype, 'setState')
       .after(() => { this.traverseGOD() });
-
     console.log('This: ', this)
   }
 
