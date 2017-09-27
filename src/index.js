@@ -4,12 +4,14 @@ import ride from 'ride';
 /** Wrapper component to send messages to React Sight© extension */
 class God extends Component {
   store = []
+  version = null;
 
   /** TODO - flattening...
    * 
    * iterate through props list
    */
   parseProps = (currentComponent) => {
+    console.log('# parseProps')
     let newProps = {}
     const keys = Object.keys(currentComponent)
     keys.forEach(key => {
@@ -97,21 +99,98 @@ class God extends Component {
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
   }
 
+  /** TODO: Get State & Props
+   * 
+   * 
+   * Traverse through vDOM (React 16) and build up JSON data
+   * 
+   */
+  recur16 = (node, parentArr) => {
+    const newComponent = {
+      name: '',
+      children: [],
+      state: null,
+      props: null,
+    }
+
+    // get name
+    if (node.type) {
+      if (node.type.name) newComponent.name = node.type.name
+      else newComponent.name = node.type
+    }
+
+    // get state
+    if (node.memoizedState) newComponent.state = node.memoizedState
+
+    // get props
+    if (node.memoizedProps) newComponent.props = this.props16(node)
+
+    newComponent.children = []
+    // console.log('node:', node)
+    // console.log('name:', newComponent.name)
+    parentArr.push(newComponent)
+    if (node.child != null) this.recur16(node.child, newComponent.children)
+    if (node.sibling != null) this.recur16(node.sibling, parentArr)
+  }
+
+  /** TODO - get objects to work
+   * 
+   * Parse the props for React 16 components
+   */
+  props16 = node => {
+    const props = {}
+    const keys = Object.keys(node.memoizedProps)
+    keys.forEach(prop => {
+      // console.log(`${prop}:  ${node.memoizedProps[prop]}`)
+      if (typeof node.memoizedProps[prop] === 'function') {
+        props[prop] = '' + node.memoizedProps[prop]
+      }
+      else if (typeof node.memoizedProps[prop] === 'object') {
+        props[prop] = 'object*'
+        // props[prop] = node.memoizedProps[prop] // bad
+      }
+      else if (prop === 'children') {
+        props[prop] = new node.memoizedProps[prop].constructor
+        if (Array.isArray(node.memoizedProps[prop])) {
+        node.memoizedProps[prop].forEach(child => {
+        props[prop].push(child && child.type && child.type.name)
+        })
+        }
+        else props[prop].name = node.memoizedProps[prop].type && node.memoizedProps[prop].type.name
+      }
+
+      else props[prop] = node.memoizedProps[prop]
+    })
+    return props;
+  }
+
+  /** Traversal Method for React 16 */
+  traverse16 = (components = []) => {
+    const vDOM = this._reactInternalFiber
+    this.recur16(vDOM, components)
+    const data = { data: components }
+    window.postMessage(JSON.parse(JSON.stringify(data)), '*')
+  }
+
   /** 
    * When component Mounts, add a listener for React-Sight extension. When extension loads,
    * a message will be emitted and this component will respond with data so that extension 
    * can draw when it first loads
    */
   componentDidMount() {
+    this.version = React.version
+    console.log('version', this.version)
+
+    // experimental react 16 support
+    if (this.version === '16.0.0') this.traverseGOD = this.traverse16
+
     window.addEventListener('attached', e => {
       console.log('detected event')
       this.traverseGOD()
     })
-
     // Dynamically Patch setState at runtime to call traverseGod
     ride(React.Component.prototype, 'setState')
       .after(() => { this.traverseGOD() });
-
     console.log('This: ', this)
   }
 
