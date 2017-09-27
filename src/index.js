@@ -11,6 +11,7 @@ class God extends Component {
    * iterate through props list
    */
   parseProps = (currentComponent) => {
+    console.log('# parseProps')
     let newProps = {}
     const keys = Object.keys(currentComponent)
     keys.forEach(key => {
@@ -105,26 +106,69 @@ class God extends Component {
    * 
    */
   recur16 = (node, parentArr) => {
-    const newComponent = {}
+    const newComponent = {
+      name: '',
+      children: [],
+      state: null,
+      props: null,
+    }
 
+    // get name
     if (node.type) {
       if (node.type.name) newComponent.name = node.type.name
       else newComponent.name = node.type
     }
 
+    // get state
+    if (node.memoizedState) newComponent.state = node.memoizedState
+
+    // get props
+    if (node.memoizedProps) newComponent.props = this.props16(node)
+
     newComponent.children = []
-    console.log('node:', node)
-    console.log('name:', newComponent.name)
+    // console.log('node:', node)
+    // console.log('name:', newComponent.name)
     parentArr.push(newComponent)
     if (node.child != null) this.recur16(node.child, newComponent.children)
     if (node.sibling != null) this.recur16(node.sibling, parentArr)
+  }
+
+  /** TODO - get objects to work
+   * 
+   * Parse the props for React 16 components
+   */
+  props16 = node => {
+    const props = {}
+    const keys = Object.keys(node.memoizedProps)
+    keys.forEach(prop => {
+      // console.log(`${prop}:  ${node.memoizedProps[prop]}`)
+      if (typeof node.memoizedProps[prop] === 'function') {
+        props[prop] = '' + node.memoizedProps[prop]
+      }
+      else if (typeof node.memoizedProps[prop] === 'object') {
+        props[prop] = 'object*'
+        // props[prop] = node.memoizedProps[prop] // bad
+      }
+      else if (prop === 'children') {
+        props[prop] = new node.memoizedProps[prop].constructor
+        if (Array.isArray(node.memoizedProps[prop])) {
+        node.memoizedProps[prop].forEach(child => {
+        props[prop].push(child && child.type && child.type.name)
+        })
+        }
+        else props[prop].name = node.memoizedProps[prop].type && node.memoizedProps[prop].type.name
+      }
+
+      else props[prop] = node.memoizedProps[prop]
+    })
+    return props;
   }
 
   /** Traversal Method for React 16 */
   traverse16 = (components = []) => {
     const vDOM = this._reactInternalFiber
     this.recur16(vDOM, components)
-    const data = { data: components, store: this.store }
+    const data = { data: components }
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
   }
 
