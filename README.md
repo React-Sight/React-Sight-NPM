@@ -9,6 +9,10 @@ React Sight is a live view of the component hierarchy tree of your React applica
 ```
 npm install --save-dev react-sight
 ```
+or
+```
+yarn install --dev react-sight
+```
 
 2. Import React Sight in your top-level component and wrap the God component around your whole application.
 
