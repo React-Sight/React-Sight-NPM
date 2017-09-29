@@ -5,9 +5,8 @@ import ride from 'ride';
 class God extends Component {
   store = []
   version = null;
-
   /** TODO - flattening...
-   * 
+   *
    * iterate through props list
    */
   parseProps = (currentComponent) => {
@@ -100,10 +99,10 @@ class God extends Component {
   }
 
   /** TODO: Get State & Props
-   * 
-   * 
+   *
+   *
    * Traverse through vDOM (React 16) and build up JSON data
-   * 
+   *
    */
   recur16 = (node, parentArr) => {
     const newComponent = {
@@ -132,9 +131,8 @@ class God extends Component {
     if (node.child != null) this.recur16(node.child, newComponent.children)
     if (node.sibling != null) this.recur16(node.sibling, parentArr)
   }
-
   /** TODO - get objects to work
-   * 
+   *
    * Parse the props for React 16 components
    */
   props16 = node => {
@@ -171,16 +169,14 @@ class God extends Component {
     const data = { data: components }
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
   }
-
-  /** 
+  /**
    * When component Mounts, add a listener for React-Sight extension. When extension loads,
-   * a message will be emitted and this component will respond with data so that extension 
+   * a message will be emitted and this component will respond with data so that extension
    * can draw when it first loads
    */
   componentDidMount() {
     this.version = React.version
     console.log('version', this.version)
-
     // experimental react 16 support
     if (this.version === '16.0.0') this.traverseGOD = this.traverse16
 
@@ -193,7 +189,6 @@ class God extends Component {
       .after(() => { this.traverseGOD() });
     console.log('This: ', this)
   }
-
   // Render the children of the props
   render() {
     return (
