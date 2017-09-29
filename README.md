@@ -6,9 +6,13 @@ React Sight is a live view of the component hierarchy tree of your React applica
 
 1. Run npm install for Right Sight in your root project folder
 
-```npm install --save-dev react-sight```
+```
+npm install --save-dev react-sight
+```
 or
-```yarn install --dev react-sight```
+```
+yarn install --dev react-sight
+```
 
 2. ```Import``` Sight where you render your App.
 
