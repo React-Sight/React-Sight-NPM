@@ -14,28 +14,43 @@ or
 yarn install --dev react-sight
 ```
 
-2. Import React Sight in your top-level component and wrap the God component around your whole application.
+2. ```Import``` Sight where you render your App.
+
 
 ```javascript
 import React, { Component } from 'react';
 // Add import statement
 import Sight from 'react-sight'
+```
 
+3. Wrap the ```<Sight>``` component around your application
 
-//Wrap Viz Component around your application
+//Wrap <Sight> Component around your application
+```
 ReactDOM.render(
-  <Provider store={store}>
-    <Sight>
+  <Sight>
+    </App>
+  </Sight>
+  document.getElementById('root'),
+);
+```
+
+
+```
+//Wrap <Sight> Component around your application
+ReactDOM.render(
+  <Sight>
+    <Provider store={store}>
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={App} />
           <Route exact path="/chat" component={Chat} />
         </Switch>
       </BrowserRouter>
-    </Sight>
-  </Provider>
+    </Provider>
+  </Sight>
   ,
-  document.getElementById('groot'),
+  document.getElementById('root'),
 );
 ```
 
