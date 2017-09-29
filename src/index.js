@@ -9,28 +9,32 @@ class God extends Component {
    *
    * iterate through props list
    */
-  parseProps = (currentComponent) => {
-    console.log('# parseProps')
+ parseProps = (currentComponent) => {
     let newProps = {}
-    const keys = Object.keys(currentComponent)
-    keys.forEach(key => {
-      // Functions
-      if (typeof currentComponent[key] === 'function') newProps[key] = '' + currentComponent[key]
-      // Objects
-      else if (typeof currentComponent[key] === 'object') newProps[key] = currentComponent[key]
-      // Children - TODO flatten this object
+    for (let key in currentComponent) {
+      console.log('current component: ', currentComponent)
+      console.log('current property in PROPS: ', key)
+      if (typeof currentComponent[key] === 'function') {
+        newProps[key] = '' + currentComponent[key]
+      }
       else if (key === 'children') {
         newProps[key] = new currentComponent[key].constructor
         if (Array.isArray(currentComponent[key])) {
           currentComponent[key].forEach(child => {
-            newProps[key].push(child && child.type && child.type.name)
+            console.log('CHILD OF CHILDREN: ', child)
+            newProps[key].push(child.type || null && child.type.name || null)
+            console.log(newProps[key])
           })
+        } else {
+          newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
         }
-        else newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
+      } else if (typeof currentComponent[key] === 'object') {
+        newProps[key] = currentComponent[key]
+      } else {
+        newProps[key] = currentComponent[key]
       }
-      else newProps[key] = currentComponent[key]
-      return newProps
-    })
+    }
+    return newProps
   }
 
   /** Traverse through virtual DOM and add data to array */
@@ -180,8 +184,7 @@ class God extends Component {
     // experimental react 16 support
     if (this.version === '16.0.0') this.traverseGOD = this.traverse16
 
-    window.addEventListener('attached', e => {
-      console.log('detected event')
+    window.addEventListener('reactsight', e => {
       this.traverseGOD()
     })
     // Dynamically Patch setState at runtime to call traverseGod
