@@ -1,5 +1,5 @@
 # React Sight
-<img src="/assets/reactsight.png" width="300"/>
+<img src="/assets/sidewaylogo.png" width="300"/>
 React Sight is a live view of the component hierarchy tree of your React application with support for React Router and Redux.
 
 ## Set Up
@@ -14,28 +14,44 @@ or
 yarn install --dev react-sight
 ```
 
-2. Import React Sight in your top-level component and wrap the God component around your whole application.
+2. ```Import``` Sight where you render your App.
+
 
 ```javascript
 import React, { Component } from 'react';
 // Add import statement
 import Sight from 'react-sight'
+```
 
+3. Wrap the ```<Sight>``` component around your application
 
-//Wrap Viz Component around your application
+```
+//Wrap <Sight> Component around your application
 ReactDOM.render(
-  <Provider store={store}>
-    <Sight>
+  <Sight>
+    </App>
+  </Sight>
+  document.getElementById('root'),
+);
+```
+
+or
+
+```
+//Wrap <Sight> Component around your application
+ReactDOM.render(
+  <Sight>
+    <Provider store={store}>
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={App} />
           <Route exact path="/chat" component={Chat} />
         </Switch>
       </BrowserRouter>
-    </Sight>
-  </Provider>
+    </Provider>
+  </Sight>
   ,
-  document.getElementById('groot'),
+  document.getElementById('root'),
 );
 ```
 

@@ -1,6 +1,6 @@
 {
-  "name": "visualizeio",
-  "version": "1.0.4",
+  "name": "react-sight",
+  "version": "1.0.0",
   "description": "Visualization tool for React applications inspired by react-devtools (supports react-redux and react-router)",
   "main": "build/index.js",
   "peerDependencies": {
