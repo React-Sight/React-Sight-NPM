@@ -12,8 +12,6 @@ class God extends Component {
  parseProps = (currentComponent) => {
     let newProps = {}
     for (let key in currentComponent) {
-      console.log('current component: ', currentComponent)
-      console.log('current property in PROPS: ', key)
       if (typeof currentComponent[key] === 'function') {
         newProps[key] = '' + currentComponent[key]
       }
@@ -21,9 +19,18 @@ class God extends Component {
         newProps[key] = new currentComponent[key].constructor
         if (Array.isArray(currentComponent[key])) {
           currentComponent[key].forEach(child => {
-            console.log('CHILD OF CHILDREN: ', child)
-            newProps[key].push(child.type || null && child.type.name || null)
-            console.log(newProps[key])
+            if (typeof child === 'undefined') return
+            let name;
+            if (child) {
+              name = child
+              if (child.type) {
+                name = child.type
+                if (child.type.name) {
+                  name = child.type.name
+                }
+              }
+            }
+            newProps[key].push(name)
           })
         } else {
           newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
@@ -129,8 +136,6 @@ class God extends Component {
     if (node.memoizedProps) newComponent.props = this.props16(node)
 
     newComponent.children = []
-    // console.log('node:', node)
-    // console.log('name:', newComponent.name)
     parentArr.push(newComponent)
     if (node.child != null) this.recur16(node.child, newComponent.children)
     if (node.sibling != null) this.recur16(node.sibling, parentArr)
@@ -143,13 +148,11 @@ class God extends Component {
     const props = {}
     const keys = Object.keys(node.memoizedProps)
     keys.forEach(prop => {
-      // console.log(`${prop}:  ${node.memoizedProps[prop]}`)
       if (typeof node.memoizedProps[prop] === 'function') {
         props[prop] = '' + node.memoizedProps[prop]
       }
       else if (typeof node.memoizedProps[prop] === 'object') {
         props[prop] = 'object*'
-        // props[prop] = node.memoizedProps[prop] // bad
       }
       else if (prop === 'children') {
         props[prop] = new node.memoizedProps[prop].constructor
