@@ -5,33 +5,43 @@ import ride from 'ride';
 class God extends Component {
   store = []
   version = null;
-
   /** TODO - flattening...
-   * 
+   *
    * iterate through props list
    */
-  parseProps = (currentComponent) => {
-    console.log('# parseProps')
+ parseProps = (currentComponent) => {
     let newProps = {}
-    const keys = Object.keys(currentComponent)
-    keys.forEach(key => {
-      // Functions
-      if (typeof currentComponent[key] === 'function') newProps[key] = '' + currentComponent[key]
-      // Objects
-      else if (typeof currentComponent[key] === 'object') newProps[key] = currentComponent[key]
-      // Children - TODO flatten this object
+    for (let key in currentComponent) {
+      if (typeof currentComponent[key] === 'function') {
+        newProps[key] = '' + currentComponent[key]
+      }
       else if (key === 'children') {
         newProps[key] = new currentComponent[key].constructor
         if (Array.isArray(currentComponent[key])) {
           currentComponent[key].forEach(child => {
-            newProps[key].push(child && child.type && child.type.name)
+            if (typeof child === 'undefined') return
+            let name;
+            if (child) {
+              name = child
+              if (child.type) {
+                name = child.type
+                if (child.type.name) {
+                  name = child.type.name
+                }
+              }
+            }
+            newProps[key].push(name)
           })
+        } else {
+          newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
         }
-        else newProps[key].name = currentComponent[key].type && currentComponent[key].type.name
+      } else if (typeof currentComponent[key] === 'object') {
+        newProps[key] = currentComponent[key]
+      } else {
+        newProps[key] = currentComponent[key]
       }
-      else newProps[key] = currentComponent[key]
-      return newProps
-    })
+    }
+    return newProps
   }
 
   /** Traverse through virtual DOM and add data to array */
@@ -100,10 +110,10 @@ class God extends Component {
   }
 
   /** TODO: Get State & Props
-   * 
-   * 
+   *
+   *
    * Traverse through vDOM (React 16) and build up JSON data
-   * 
+   *
    */
   recur16 = (node, parentArr) => {
     const newComponent = {
@@ -126,28 +136,23 @@ class God extends Component {
     if (node.memoizedProps) newComponent.props = this.props16(node)
 
     newComponent.children = []
-    // console.log('node:', node)
-    // console.log('name:', newComponent.name)
     parentArr.push(newComponent)
     if (node.child != null) this.recur16(node.child, newComponent.children)
     if (node.sibling != null) this.recur16(node.sibling, parentArr)
   }
-
   /** TODO - get objects to work
-   * 
+   *
    * Parse the props for React 16 components
    */
   props16 = node => {
     const props = {}
     const keys = Object.keys(node.memoizedProps)
     keys.forEach(prop => {
-      // console.log(`${prop}:  ${node.memoizedProps[prop]}`)
       if (typeof node.memoizedProps[prop] === 'function') {
         props[prop] = '' + node.memoizedProps[prop]
       }
       else if (typeof node.memoizedProps[prop] === 'object') {
         props[prop] = 'object*'
-        // props[prop] = node.memoizedProps[prop] // bad
       }
       else if (prop === 'children') {
         props[prop] = new node.memoizedProps[prop].constructor
@@ -171,21 +176,18 @@ class God extends Component {
     const data = { data: components }
     window.postMessage(JSON.parse(JSON.stringify(data)), '*')
   }
-
-  /** 
+  /**
    * When component Mounts, add a listener for React-Sight extension. When extension loads,
-   * a message will be emitted and this component will respond with data so that extension 
+   * a message will be emitted and this component will respond with data so that extension
    * can draw when it first loads
    */
   componentDidMount() {
     this.version = React.version
     console.log('version', this.version)
-
     // experimental react 16 support
     if (this.version === '16.0.0') this.traverseGOD = this.traverse16
 
-    window.addEventListener('attached', e => {
-      console.log('detected event')
+    window.addEventListener('reactsight', e => {
       this.traverseGOD()
     })
     // Dynamically Patch setState at runtime to call traverseGod
@@ -193,7 +195,6 @@ class God extends Component {
       .after(() => { this.traverseGOD() });
     console.log('This: ', this)
   }
-
   // Render the children of the props
   render() {
     return (
