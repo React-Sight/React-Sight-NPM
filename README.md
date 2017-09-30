@@ -1,5 +1,5 @@
 # React Sight
-<img src="/assets/sidewaylogo.png" width="300"/>
+<img src="/assets/sidewaylogo4.png" width="300"/>
 React Sight is a live view of the component hierarchy tree of your React application with support for React Router and Redux.
 
 ## Set Up
