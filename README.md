@@ -1,3 +1,6 @@
+# DEPRICATED --- > Please see our new repo [here](https://github.com/React-Sight/React-SightChromeExt/)!
+React Sight started as an NPM module for extracting React's virtual DOM, however it has grown into much more!
+
 # React Sight
 <img src="/assets/sidewaylogo4.png" width="300"/>
 React Sight is a live view of the component hierarchy tree of your React application with support for React Router and Redux.
